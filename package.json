@@ -2,6 +2,7 @@
   "name": "advent-of-code",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
+    "chalk": "^4",
     "nodemon": "^3.0.1"
   }
 }
