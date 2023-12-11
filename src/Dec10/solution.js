@@ -159,6 +159,7 @@ console.log(solution());
 
 
 function getStartChar(loopArr, start) {
+
   const first = loopArr.at(1).split(",").map(Number);
   const end = loopArr.at(-1).split(",").map(Number);
 
