@@ -26,7 +26,7 @@ function solution() {
     for (let x = 0; x < galaxy[0].length; x++) {
       const char = galaxy[y][x];
       if (char === "#") {
-        galaxyMap.push(`${y},${x}`);
+        galaxyMap.push([y, x]);
       }
     }
   }
@@ -34,10 +34,9 @@ function solution() {
   let number = 0;
   let totalDistances = 0;
   while (galaxyMap.length > 0) {
-    const [y, x] = galaxyMap.shift().split(",").map(Number);
+    const [y, x] = galaxyMap.shift();
 
-    galaxyMap.forEach((coord) => {
-      const [y2, x2] = coord.split(",").map(Number);
+    galaxyMap.forEach(([y2, x2]) => {
       const distance = Math.abs(y - y2) + Math.abs(x - x2);
 
       let expansion = 0;
