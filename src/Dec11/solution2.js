@@ -31,7 +31,6 @@ function solution() {
     }
   }
 
-  let number = 0;
   let totalDistances = 0;
   while (galaxyMap.length > 0) {
     const [y, x] = galaxyMap.shift();
@@ -53,8 +52,6 @@ function solution() {
 
       totalDistances += distance + expansion * 999999;
     });
-
-    number++;
   }
 
   return totalDistances;
