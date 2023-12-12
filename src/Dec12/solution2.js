@@ -13,29 +13,35 @@ function solution() {
 
   for (let item of springs) {
     const [springs, pattern] = item;
-    const unfoldedSprings = [1, 2, 3, 4, 5].map(() => springs).join("?");
-    const unfoldedPattern = [1, 2, 3, 4, 5].flatMap(() => pattern);
+    const unfoldedSprings = Array(5).fill(springs).join("?");
+    const unfoldedPattern = Array(5).fill(pattern).flatMap(p => p);
     const count = memoCountCombinations(unfoldedSprings, unfoldedPattern);
-    console.log(unfoldedSprings, count);
+    // console.log(unfoldedSprings, count);
     solution2 += count;
   }
 
   return solution2;
 }
 
-const memo = {};
+const memo = new Map();
 function memoCountCombinations(springs, pattern, level = 0) {
   const key = `${springs}-${pattern.join(",")}`;
-  if (memo[key] !== undefined) {
-    return memo[key];
+  if (memo.has(key)) {
+    return memo.get(key);
   }
 
   const count = countCombinations(springs, pattern, level);
-  memo[key] = count;
+  memo.set(key, count);
   return count;
 }
 
+let count = 0;
+let maxLevel = 0;
 function countCombinations(springs, pattern, level = 0) {
+  // console.log(" ".repeat(level), springs, pattern.join(","));
+  maxLevel = Math.max(maxLevel, level);
+  count++;
+
   if (springs.length === 0) {
     if (pattern.length === 0) {
       return 1;
@@ -89,5 +95,6 @@ function countCombinations(springs, pattern, level = 0) {
 }
 
 console.log(solution());
+console.log({ count, maxLevel, memo: memo.size });
 
 // 1493340882140
