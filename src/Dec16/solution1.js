@@ -1,19 +1,11 @@
 const fs = require("fs");
 
-const printDirectionMap = {
-  right: ">",
-  left: "<",
-  up: "^",
-  down: "v",
-};
-
 function solution() {
   const grid = fs
     .readFileSync(`${__dirname}/input.txt`, "utf8")
     .split("\n")
     .map((line) => line.split(""));
 
-  grid.forEach((line) => console.log(line.join("")));
   console.log("part1", ride(grid, [0, 0], "right"));
 
   let max = 0;
@@ -31,103 +23,94 @@ function solution() {
       ride(grid, [i, grid.length - 1], "left")
     );
   }
+
   console.log("part2", max);
 }
 
 function ride(grid, startPos, startDirection) {
-  const gridRresult = grid.map((line) => line.map((char) => "."));
-  // console.log("")
-
-  const stack = [[startPos, startDirection]];
+  const [startY, startX] = startPos;
+  const stack = [[startY, startX, startDirection]];
   const visited = new Set();
-  let count = 0;
   const set = new Set();
+
   while (stack.length > 0) {
-    const [pos, direction] = stack.pop();
-    const key = `${pos[0]},${pos[1]},${direction}`;
+    const [y, x, direction] = stack.pop();
+
+    const key = `${y},${x},${direction}`;
 
     if (visited.has(key)) {
       continue;
     }
-    if (pos[0] < 0 || pos[0] >= grid.length) {
+    if (y < 0 || y >= grid.length) {
       continue;
     }
-    if (pos[1] < 0 || pos[1] >= grid[0].length) {
+    if (x < 0 || x >= grid[0].length) {
       continue;
     }
-
-    count++;
 
     visited.add(key);
+    set.add(`${y},${x}`);
 
-    const currentChar = grid[pos[0]][pos[1]];
-
-    set.add(`${pos[0]},${pos[1]}`);
-    gridRresult[pos[0]][pos[1]] = "#"; //printDirectionMap[direction];
-    if (currentChar === ".") {
-    }
+    const currentChar = grid[y][x];
 
     if (currentChar === ".") {
-      stack.push([getNextDirection(pos, direction), direction]);
+      stack.push(getNextDirection(y, x, direction));
     }
 
     if (currentChar === "|") {
       if (["left", "right"].includes(direction)) {
-        stack.push([[pos[0] - 1, pos[1]], "up"]);
-        stack.push([[pos[0] + 1, pos[1]], "down"]);
+        stack.push([y - 1, x, "up"]);
+        stack.push([y + 1, x, "down"]);
       } else {
-        stack.push([getNextDirection(pos, direction), direction]);
+        stack.push(getNextDirection(y, x, direction));
       }
     }
 
     if (currentChar === "-") {
       if (["up", "down"].includes(direction)) {
-        stack.push([[pos[0], pos[1] - 1], "left"]);
-        stack.push([[pos[0], pos[1] + 1], "right"]);
+        stack.push([y, x - 1, "left"]);
+        stack.push([y, x + 1, "right"]);
       } else {
-        stack.push([getNextDirection(pos, direction), direction]);
+        stack.push(getNextDirection(y, x, direction));
       }
     }
 
     if (currentChar === "/") {
       if (direction === "up") {
-        stack.push([[pos[0], pos[1] + 1], "right"]);
+        stack.push([y, x + 1, "right"]);
       } else if (direction === "right") {
-        stack.push([[pos[0] - 1, pos[1]], "up"]);
+        stack.push([y - 1, x, "up"]);
       } else if (direction === "down") {
-        stack.push([[pos[0], pos[1] - 1], "left"]);
+        stack.push([y, x - 1, "left"]);
       } else if (direction === "left") {
-        stack.push([[pos[0] + 1, pos[1]], "down"]);
+        stack.push([y + 1, x, "down"]);
       }
     }
 
     if (currentChar === "\\") {
       if (direction === "up") {
-        stack.push([[pos[0], pos[1] - 1], "left"]);
+        stack.push([y, x - 1, "left"]);
       } else if (direction === "right") {
-        stack.push([[pos[0] + 1, pos[1]], "down"]);
+        stack.push([y + 1, x, "down"]);
       } else if (direction === "down") {
-        stack.push([[pos[0], pos[1] + 1], "right"]);
+        stack.push([y, x + 1, "right"]);
       } else if (direction === "left") {
-        stack.push([[pos[0] - 1, pos[1]], "up"]);
+        stack.push([y - 1, x, "up"]);
       }
     }
   }
 
-  // gridRresult.forEach((line) => console.log(line.join('')));
-
   return set.size;
 }
 
-function getNextDirection(pos, direction) {
-  const [y, x] = pos;
+function getNextDirection(y, x, direction) {
   const [dy, dx] = {
     right: [0, 1],
     left: [0, -1],
     up: [-1, 0],
     down: [1, 0],
   }[direction];
-  return [y + dy, x + dx];
+  return [y + dy, x + dx, direction];
 }
 
 solution();
